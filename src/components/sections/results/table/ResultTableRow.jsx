@@ -1,9 +1,9 @@
-import { Item } from '@discretize/gw2-ui-new';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import { Item, Profession } from '@discretize/gw2-ui-new';
 import { Typography } from '@mui/material';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import React from 'react';
+import { makeStyles } from 'tss-react/mui';
 import { useDispatch } from 'react-redux';
 import { allExtrasModifiersById } from '../../../../assets/modifierdata';
 import { percents } from '../../../../assets/modifierdata/metadata';
@@ -11,6 +11,21 @@ import { changeSelectedCharacter, toggleSaved } from '../../../../state/slices/c
 import { extrasTypes } from '../../../../state/slices/extras';
 
 const roundTwo = (num) => Math.round(num * 100) / 100;
+
+const useStyles = makeStyles()((theme) => ({
+  favSaved: {
+    opacity: '1',
+    '&:hover': {
+      opacity: '.75',
+    },
+  },
+  fav: {
+    opacity: '.5',
+    '&:hover': {
+      opacity: '1',
+    },
+  },
+}));
 
 const ResultTableRow = ({
   character,
@@ -23,6 +38,7 @@ const ResultTableRow = ({
   displayExtras,
   displayAttributes,
 }) => {
+  const { classes } = useStyles();
   const dispatch = useDispatch();
 
   const { value } = character.results;
@@ -44,25 +60,20 @@ const ResultTableRow = ({
       hover
       className={underlineClass}
     >
-      <TableCell scope="row" align="center" padding="none">
-        <StarRoundedIcon
-          sx={
-            saved
-              ? {
-                  color: 'star',
-                }
-              : {
-                  opacity: '0.2',
-                  '&:hover': {
-                    opacity: '1',
-                    color: 'star',
-                  },
-                }
-          }
-          onClick={(e) => {
-            dispatch(toggleSaved(character));
-            e.stopPropagation();
-          }}
+      <TableCell
+        scope="row"
+        align="center"
+        padding="none"
+        onClick={(e) => {
+          dispatch(toggleSaved(character));
+          e.stopPropagation();
+        }}
+      >
+        <Profession
+          name={character.settings.specialization}
+          disableLink
+          disableText
+          className={saved ? classes.favSaved : classes.fav}
         />
       </TableCell>
       <TableCell scope="row">
